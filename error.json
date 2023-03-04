@@ -1,0 +1,11 @@
+{
+    "_type": "ErrorResponse",
+    "errors": [
+        {
+            "code": "InvalidRequest",
+            "subCode": "ParameterMissing",
+            "message": "Required parameter is missing.",
+            "parameter": "text"
+        }
+    ]
+}

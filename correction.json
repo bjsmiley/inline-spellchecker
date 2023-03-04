@@ -1,0 +1,17 @@
+{
+    "_type": "SpellCheck",
+    "flaggedTokens": [
+        {
+            "offset": 0,
+            "token": "opportunityg",
+            "type": "UnknownToken",
+            "suggestions": [
+                {
+                    "suggestion": "opportunity",
+                    "score": 1
+                }
+            ]
+        }
+    ],
+    "correctionType": "High"
+}
