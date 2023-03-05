@@ -1,17 +1,20 @@
 
 fn main() {
-    let utterance = std::env::args().skip(1).collect::<Vec<String>>().join(" ");
-    core::run(utterance);
+    let text = std::env::args().skip(1).collect::<Vec<String>>().join(" ");
+    core::run(text);
 }
 
 mod core {
-    pub fn run(utterance: String) {
+    pub fn run(text: String) {
+        let output = check(text);
+        println!("{}",output);
+    }
+
+    pub(crate) fn check(text: String) -> String {
 
         #[cfg(target_os = "windows")]
         {
-            use crate::win;
-            let output = win::run(utterance).unwrap();
-            println!("{}",output);
+            crate::win::check(text).unwrap()
         }
 
         // TODO: other platforms
@@ -38,12 +41,12 @@ mod win {
     }, 
     core::{HSTRING, PWSTR}, w};
 
-    pub fn run(utterance: String) -> windows::core::Result<String> {
+    pub fn check(text: String) -> windows::core::Result<String> {
 
         unsafe { CoInitializeEx(None, COINIT_MULTITHREADED)?; }
         let factory: ISpellCheckerFactory = unsafe { CoCreateInstance(&SpellCheckerFactory, None, CLSCTX_ALL)? };
         let checker = unsafe { factory.CreateSpellChecker(w!("en-US"))? };
-        let result = unsafe { checker.ComprehensiveCheck(&HSTRING::from(utterance.clone()))? };
+        let result = unsafe { checker.ComprehensiveCheck(&HSTRING::from(text.clone()))? };
         let output: &mut Vec<String> = &mut Vec::new();
         let mut current_index: usize = 0;
     
@@ -52,7 +55,7 @@ mod win {
             let len = usize::try_from(unsafe { err.Length()? }).unwrap();
             let correction = unsafe { err.CorrectiveAction()? };
     
-            let before = &utterance[current_index..index];
+            let before = &text[current_index..index];
             output.push(before.to_string());
     
             match correction {
@@ -61,7 +64,7 @@ mod win {
                     output.push(replacement);
                 },
                 CORRECTIVE_ACTION_GET_SUGGESTIONS => {
-                    let word = &utterance[index..index + len];
+                    let word = &text[index..index + len];
                     let suggestions = unsafe { checker.Suggest(&HSTRING::from(word))? };
                     let mut suggestion = [PWSTR::null()];
                     unsafe { let _ = suggestions.Next(&mut suggestion, None); }
@@ -74,7 +77,7 @@ mod win {
                     }
                 },
                 CORRECTIVE_ACTION_NONE => {
-                    let word = &utterance[index..index + len];
+                    let word = &text[index..index + len];
                     output.push(word.to_string());
                 },
                 CORRECTIVE_ACTION_DELETE => { },
@@ -86,3 +89,12 @@ mod win {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use crate::core;
+
+    #[test]
+    fn test_string() {
+        assert_eq!("Can I have some?", core::check(String::from("Cann I I haev some?")))
+    }
+}
