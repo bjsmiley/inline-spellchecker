@@ -6,5 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = { version = "0.11.14", features = ["blocking", "json", "serde_json"] }
-serde = { version = "1.0.152", features = ["std", "derive"] }
+
+[dependencies.windows]
+version = "0.44.0"
+features = [
+    "Foundation",
+    "Win32_System_Com",
+    "Win32_Globalization"
+]
