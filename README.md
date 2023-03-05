@@ -1,5 +1,5 @@
 # Inline Spell Checker
-A small tool I made instead of sleeping. Motivation: to quickly auto-correct words I know I'm about to butcher instead of going to google to correct it.
+A small tool I made late at night instead of sleeping. Motivation: to quickly auto-correct words I know I'm about to butcher instead of going to google to correct it.
 
 ## Example
 ```shell
@@ -10,4 +10,4 @@ A small tool I made instead of sleeping. Motivation: to quickly auto-correct wor
 ```
 
 ## Implementation
-I used the windows api, because why not. ~~Can~~ Should I even extend this to [macos](https://github.com/ryanmcgrath/cacao) next?
+I used the windows api, because why not. ~~Can~~ Should I even extend this to [macos](https://github.com/ryanmcgrath/cacao) next? [linux](http://aspell.net/man-html/Writing-programs-to-use-Aspell.html#Writing-programs-to-use-Aspell)?
