@@ -1,4 +1,3 @@
-
 fn main() {
     let text = std::env::args().skip(1).collect::<Vec<String>>().join(" ");
     core::run(text);
@@ -10,15 +9,17 @@ mod core {
         println!("{}",output);
     }
 
+    #[cfg(target_os = "windows")]
     pub(crate) fn check(text: String) -> String {
-
-        #[cfg(target_os = "windows")]
-        {
-            crate::win::check(text).unwrap()
-        }
-
-        // TODO: other platforms
+        crate::win::check(text).unwrap()
     }
+
+    #[cfg(not(target_os = "windows"))]
+    pub(crate) fn check(text: String) -> String {
+        text
+    }
+
+    // TODO: other platforms
 }
 
 #[cfg(target_os = "windows")]
@@ -72,7 +73,7 @@ mod win {
                         output.push(word.to_string());
                     }
                     else {
-                        let replacement = unsafe { err.Replacement()?.to_string()? };                
+                        let replacement = unsafe { suggestion[0].display().to_string() };                
                         output.push(replacement);
                     }
                 },
@@ -80,11 +81,12 @@ mod win {
                     let word = &text[index..index + len];
                     output.push(word.to_string());
                 },
-                CORRECTIVE_ACTION_DELETE => { },
+                CORRECTIVE_ACTION_DELETE => {},
                 _ => {}
             }
             current_index = index + len;
         }
+        output.push((&text[current_index..]).to_string());
         Ok(output.join(""))
     }
 }
@@ -94,7 +96,12 @@ mod tests {
     use crate::core;
 
     #[test]
-    fn test_string() {
-        assert_eq!("Can I have some?", core::check(String::from("Cann I I haev some?")))
+    fn test_sentence() {
+        assert_eq!("Can I  have some?", core::check(String::from("Cann I I haev some?")))
+    }
+
+    #[test]
+    fn test_word() {
+        assert_eq!("dependencies", core::check(String::from("dependencie")))
     }
 }

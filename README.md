@@ -11,3 +11,6 @@ A small tool I made late at night instead of sleeping. Motivation: to quickly au
 
 ## Implementation
 I used the windows api, because why not. ~~Can~~ Should I even extend this to [macos](https://github.com/ryanmcgrath/cacao) next? [linux](http://aspell.net/man-html/Writing-programs-to-use-Aspell.html#Writing-programs-to-use-Aspell)?
+
+## Overengineered Potential
+- Check for updates? TUF? how does az-cli perform updates?
